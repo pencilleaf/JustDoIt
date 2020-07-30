@@ -33,4 +33,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/date_picker_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_date"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Due At"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@android:style/TextAppearance.Medium" />
+
+        <TextView
+            android:id="@+id/text_view_duedate"
+            android:layout_width="fill_parent"
+            android:gravity="right"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:text="Day dd month hh:mm" />
+
+    </LinearLayout>
+
+
 </LinearLayout>

@@ -7,9 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.util.Date;
+
 @Database(entities = {Note.class}, version = 1)
+@TypeConverters({TimestampConverter.class})
 public abstract class NoteDatabase extends RoomDatabase {
 
     private static NoteDatabase instance;
@@ -45,9 +49,9 @@ public abstract class NoteDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            noteDao.insert(new Note("Title 1", "Description 1", 1));
-            noteDao.insert(new Note("Title 2", "Description 2", 2));
-            noteDao.insert(new Note("Title 3", "Description 3", 3));
+            noteDao.insert(new Note("Title 1", "Description 1", 1, false, new Date()));
+            noteDao.insert(new Note("Title 2", "Description 2", 2,false, new Date()));
+            noteDao.insert(new Note("Title 3", "Description 3", 3,false, new Date()));
             return null;
         }
     }

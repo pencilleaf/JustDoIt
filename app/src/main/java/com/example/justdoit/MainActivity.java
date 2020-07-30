@@ -20,13 +20,21 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     public static final int ADD_NOTE_REQUEST = 1;
     public static final int EDIT_NOTE_REQUEST = 2;
     private NoteViewModel noteViewModel;
     private AppBarConfiguration mAppBarConfiguration;
+
+    private static DateFormat df = new SimpleDateFormat("EEE d MMM yy HH:mm", Locale.ENGLISH);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +74,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
-                Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
+                if(direction == ItemTouchHelper.LEFT) {
+                    noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                    Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
+                }
+                else if(direction == ItemTouchHelper.RIGHT) {
+                    Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
+                    Note newNote = new Note(note.getTitle(), note.getDescription(), note.getPriority(), !note.isCompleted(), note.getDueAt());
+                    newNote.setId(note.getId());
+                    noteViewModel.update(newNote);
+                    Toast.makeText(MainActivity.this, "Toggle complete", Toast.LENGTH_SHORT).show();
+                }
+
             }
         }).attachToRecyclerView(recyclerView);
+
+        df.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
 
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
@@ -79,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.getTitle());
                 intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
                 intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.getPriority());
+                intent.putExtra(AddEditNoteActivity.EXTRA_DUEAT, df.format(note.getDueAt()));
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
@@ -92,11 +113,16 @@ public class MainActivity extends AppCompatActivity {
             String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
             int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
-
-            Note note = new Note(title, description, priority);
-            noteViewModel.insert(note);
-
-            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
+            String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
+            Date dateInsert = null;
+            try {
+                dateInsert = df.parse(date);
+                Note note = new Note(title, description, priority, false, dateInsert);
+                noteViewModel.insert(note);
+                Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
             int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
 
@@ -108,12 +134,17 @@ public class MainActivity extends AppCompatActivity {
             String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
             String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
             int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
-
-            Note note = new Note(title, description, priority);
-            note.setId(id);
-            noteViewModel.update(note);
-
-            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
+            String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
+            Date dateInsert = null;
+            try {
+                dateInsert = df.parse(date);
+                Note note = new Note(title, description, priority, false, dateInsert);
+                note.setId(id);
+                noteViewModel.update(note);
+                Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show();
         }

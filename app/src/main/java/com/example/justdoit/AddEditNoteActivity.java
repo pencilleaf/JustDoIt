@@ -3,58 +3,142 @@ package com.example.justdoit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class AddEditNoteActivity extends AppCompatActivity {
     public static final String EXTRA_ID =
-            "com.example.myapplication.EXTRA_TID";
+            "com.example.justdoit.EXTRA_TID";
     public static final String EXTRA_TITLE =
-            "com.example.myapplication.EXTRA_TITLE";
+            "com.example.justdoit.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION =
-            "com.example.myapplication.EXTRA_DESCRIPTION";
+            "com.example.justdoit.EXTRA_DESCRIPTION";
     public static final String EXTRA_PRIORITY =
-            "com.example.myapplication.EXTRA_PRIORITY";
+            "com.example.justdoit.EXTRA_PRIORITY";
+    public static final String EXTRA_DUEAT =
+            "com.example.justdoit.EXTRA_DUEAT";
+    public static final String EXTRA_COMPLETED =
+            "com.example.justdoit.EXTRA_COMPLETED";
 
     private EditText editTextTitle;
     private EditText editTextDescription;
     private NumberPicker numberPickerPriority;
+    private TextView textViewDueDate;
+    private ImageButton datePickerButton;
+
+    private static DateFormat df = new SimpleDateFormat("EEE d MMM yy", Locale.ENGLISH);
+    private static DateFormat tf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
 
+        df.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+        tf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+
         editTextTitle = findViewById(R.id.edit_text_title);
         editTextDescription = findViewById(R.id.edit_text_description);
         numberPickerPriority = findViewById(R.id.number_picker_priority);
+        textViewDueDate = findViewById(R.id.text_view_duedate);
+        datePickerButton = findViewById(R.id.date_picker_button);
 
         numberPickerPriority.setMinValue(1);
         numberPickerPriority.setMaxValue(5);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_ID)) {
             setTitle("Edit Note");
             editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
             editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
             numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+            textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
         } else {
             setTitle("Add Note");
         }
+
+        datePickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePicker(intent.getStringExtra(EXTRA_DUEAT));
+            }
+        });
+
+    }
+
+    private void datePicker(String date) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.setTimeInMillis(0);
+                calendar.set(year, month, dayOfMonth, 0, 0, 0);
+                Date chosenDate = calendar.getTime();
+                String formatDate = df.format(chosenDate);
+                textViewDueDate.setText(formatDate);
+                timePicker(formatDate);
+            }
+        }, year, month, dayOfMonth);
+        calendar.add(Calendar.MONTH, 3);
+        long now = System.currentTimeMillis() - 1000;
+        long maxDate = calendar.getTimeInMillis();
+        datePickerDialog.getDatePicker().setMinDate(now);
+        datePickerDialog.getDatePicker().setMaxDate(maxDate); //After one month from now
+        datePickerDialog.show();
+    }
+
+    private void timePicker(final String date){
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+        final int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        final int minute = calendar.get(Calendar.MINUTE);
+
+        RangeTimePickerDialog timePickerDialog = new RangeTimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                calendar.setTimeInMillis(0);
+                calendar.set(2020, 1, 1, hourOfDay, minute, 0);
+                Date chosenTime = calendar.getTime();
+                String formatTime = tf.format(chosenTime);
+                String dateTime = date + "   " + formatTime;
+                textViewDueDate.setText(dateTime);
+            }
+        }, hour + 1, minute, false);
+        timePickerDialog.setMin(hour + 1, minute);
+        timePickerDialog.show();
     }
 
     private void saveNote() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
         int priority = numberPickerPriority.getValue();
+        String date = textViewDueDate.getText().toString();
 
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
@@ -64,6 +148,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_PRIORITY, priority);
+        data.putExtra(EXTRA_DUEAT, date);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

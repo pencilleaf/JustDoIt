@@ -1,6 +1,12 @@
 package com.example.justdoit;
+
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
+
+import java.util.Date;
 
 @Entity(tableName = "note_table")
 public class Note {
@@ -14,10 +20,18 @@ public class Note {
 
     private int priority;
 
-    public Note(String title, String description, int priority) {
+    private boolean completed;
+
+    @ColumnInfo(name = "due_at")
+    @TypeConverters({TimestampConverter.class})
+    private Date dueAt;
+
+    public Note(String title, String description, int priority, boolean completed, Date dueAt) {
         this.title = title;
         this.description = description;
         this.priority = priority;
+        this.completed = completed;
+        this.dueAt = dueAt;
     }
 
     public void setId(int id) {
@@ -38,5 +52,13 @@ public class Note {
 
     public int getPriority() {
         return priority;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public Date getDueAt() {
+        return dueAt;
     }
 }
