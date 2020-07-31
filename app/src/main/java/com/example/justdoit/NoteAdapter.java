@@ -1,12 +1,17 @@
 package com.example.justdoit;
 
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +24,7 @@ import java.util.TimeZone;
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     private OnItemClickListener listener;
+    private OnItemCheckClickListener checkListener;
 
     public NoteAdapter() {
         super(DIFF_CALLBACK);
@@ -53,18 +59,26 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     @Override
     public void onBindViewHolder(@NonNull NoteHolder holder, int position) {
         df.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
+        int[] colors = {R.color.priority_1, R.color.priority_2, R.color.priority_3, R.color.priority_4, R.color.priority_5};
 
         Note currentNote = getItem(position);
         holder.textViewTitle.setText(currentNote.getTitle());
         holder.textViewDescription.setText(currentNote.getDescription());
         holder.textViewPriority.setText(String.valueOf(currentNote.getPriority()));
         holder.textViewDueAt.setText(df.format(currentNote.getDueAt()));
-        boolean completed = currentNote.isCompleted();
-        if (completed) {
+        holder.checkBoxCompleted.setChecked(currentNote.isCompleted());
+        holder.viewPriority.setBackgroundResource(colors[currentNote.getPriority() - 1]);
+
+        if (currentNote.isCompleted()) {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewDescription.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.textViewDescription.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         }
     }
 
@@ -77,6 +91,8 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         private TextView textViewDescription;
         private TextView textViewPriority;
         private TextView textViewDueAt;
+        private CheckBox checkBoxCompleted;
+        private View viewPriority;
 
         public NoteHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,7 +100,18 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             textViewDescription = itemView.findViewById(R.id.text_view_description);
             textViewPriority = itemView.findViewById(R.id.text_view_priority);
             textViewDueAt = itemView.findViewById(R.id.text_view_duedate);
+            checkBoxCompleted = itemView.findViewById(R.id.checkbox_completed);
+            viewPriority = itemView.findViewById(R.id.view_priority);
 
+            checkBoxCompleted.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (checkListener != null && position != RecyclerView.NO_POSITION) {
+                        checkListener.onCheckClick(getItem(position));
+                    }
+                }
+            });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -105,4 +132,13 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
+    public interface OnItemCheckClickListener {
+        void onCheckClick(Note note);
+    }
+
+    public void setOnCheckClickListener(OnItemCheckClickListener listener) {
+        this.checkListener = listener;
+    }
 }
+

@@ -45,6 +45,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
     private NumberPicker numberPickerPriority;
     private TextView textViewDueDate;
     private ImageButton datePickerButton;
+    private boolean completed;
 
     private static DateFormat df = new SimpleDateFormat("EEE d MMM yy", Locale.ENGLISH);
     private static DateFormat tf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
@@ -75,6 +76,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
             editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
             numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
+            completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
         } else {
             setTitle("Add Note");
         }
@@ -119,7 +121,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
         final int minute = calendar.get(Calendar.MINUTE);
 
-        RangeTimePickerDialog timePickerDialog = new RangeTimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 calendar.setTimeInMillis(0);
@@ -130,7 +132,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
                 textViewDueDate.setText(dateTime);
             }
         }, hour + 1, minute, false);
-        timePickerDialog.setMin(hour + 1, minute);
+//        timePickerDialog.setMin(hour + 1, minute);
         timePickerDialog.show();
     }
 
@@ -140,7 +142,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
         int priority = numberPickerPriority.getValue();
         String date = textViewDueDate.getText().toString();
 
-        if (title.trim().isEmpty() || description.trim().isEmpty()) {
+        if (title.trim().isEmpty() || description.trim().isEmpty() || date.trim().isEmpty()) {
             Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -149,6 +151,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_PRIORITY, priority);
         data.putExtra(EXTRA_DUEAT, date);
+        data.putExtra(EXTRA_COMPLETED, completed);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {

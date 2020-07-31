@@ -55,8 +55,7 @@
             android:layout_width="fill_parent"
             android:gravity="right"
             android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:text="Day dd month hh:mm" />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

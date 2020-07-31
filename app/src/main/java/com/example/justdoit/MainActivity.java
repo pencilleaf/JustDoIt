@@ -74,23 +74,22 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if(direction == ItemTouchHelper.LEFT) {
-                    noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
-                    Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
-                }
-                else if(direction == ItemTouchHelper.RIGHT) {
-                    Note note = adapter.getNoteAt(viewHolder.getAdapterPosition());
-                    Note newNote = new Note(note.getTitle(), note.getDescription(), note.getPriority(), !note.isCompleted(), note.getDueAt());
-                    newNote.setId(note.getId());
-                    noteViewModel.update(newNote);
-                    Toast.makeText(MainActivity.this, "Toggle complete", Toast.LENGTH_SHORT).show();
-                }
-
+                noteViewModel.delete(adapter.getNoteAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
 
         df.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
 
+        adapter.setOnCheckClickListener(new NoteAdapter.OnItemCheckClickListener() {
+            @Override
+            public void onCheckClick(Note note) {
+                Note newNote = new Note(note.getTitle(), note.getDescription(), note.getPriority(), !note.isCompleted(), note.getDueAt());
+                newNote.setId(note.getId());
+                noteViewModel.update(newNote);
+                Toast.makeText(MainActivity.this, "Toggle complete", Toast.LENGTH_SHORT).show();
+            }
+        });
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Note note) {
@@ -100,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
                 intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.getPriority());
                 intent.putExtra(AddEditNoteActivity.EXTRA_DUEAT, df.format(note.getDueAt()));
+                intent.putExtra(AddEditNoteActivity.EXTRA_COMPLETED, note.isCompleted());
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
@@ -135,10 +135,11 @@ public class MainActivity extends AppCompatActivity {
             String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
             int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
             String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
+            boolean completed = data.getBooleanExtra(AddEditNoteActivity.EXTRA_COMPLETED, false);
             Date dateInsert = null;
             try {
                 dateInsert = df.parse(date);
-                Note note = new Note(title, description, priority, false, dateInsert);
+                Note note = new Note(title, description, priority, completed, dateInsert);
                 note.setId(id);
                 noteViewModel.update(note);
                 Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
