@@ -6,6 +6,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private NoteViewModel noteViewModel;
     private AppBarConfiguration mAppBarConfiguration;
 
+    private RadioButton radioDate;
+
     private static DateFormat df = new SimpleDateFormat("EEE d MMM yy HH:mm", Locale.ENGLISH);
 
     @Override
@@ -50,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        radioDate = findViewById(R.id.radio_date);
+        radioDate.setChecked(true);
+
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -58,13 +64,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        noteViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+        noteViewModel.sortCol.setValue("DATE");
+        noteViewModel.allNotes.observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 // update RecyclerView
                 adapter.submitList(notes);
             }
         });
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -169,5 +177,19 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch(view.getId()) {
+            case R.id.radio_date:
+                if (checked)
+                    noteViewModel.sortCol.setValue("DATE");
+                    break;
+            case R.id.radio_priority:
+                if (checked)
+                    noteViewModel.sortCol.setValue("PRIORITY");
+                    break;
+        }
     }
 }

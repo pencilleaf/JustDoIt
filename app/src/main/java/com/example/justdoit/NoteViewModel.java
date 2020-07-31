@@ -6,16 +6,28 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 
 import java.util.List;
 
 public class NoteViewModel extends AndroidViewModel {
     private NoteRepository repository;
-    private LiveData<List<Note>> allNotes;
-    public NoteViewModel(@NonNull Application application) {
+    public LiveData<List<Note>> allNotes;
+    public MutableLiveData<String> sortCol = new MutableLiveData<String>();
+
+    public NoteViewModel(@NonNull final Application application) {
         super(application);
         repository = new NoteRepository(application);
-        allNotes = repository.getAllNotes();
+        allNotes = Transformations.switchMap(sortCol, sort -> {
+            switch (sort) {
+                case "DATE":
+                    return repository.getAllNotesDate();
+                case "PRIORITY":
+                    return repository.getAllNotesPriority();
+            }
+            return null;
+        });
     }
 
     public void insert(Note note) {
