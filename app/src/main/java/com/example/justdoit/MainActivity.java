@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.sortCol.setValue("DATE");
+        noteViewModel.searchString.setValue("%");
         noteViewModel.allNotes.observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
@@ -179,8 +180,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // filter items??
-
+                // filter items
+                noteViewModel.searchString.setValue(newText);
+//                noteViewModel.getSearchResults();
                 return false;
             }
         });

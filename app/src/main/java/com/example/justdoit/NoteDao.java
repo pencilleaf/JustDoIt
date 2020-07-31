@@ -24,10 +24,10 @@ public interface NoteDao {
     @Query("DELETE FROM note_table")
     void deleteAllNotes();
 
-    @Query("SELECT * FROM note_table ORDER BY due_at ASC, priority DESC")
-    LiveData<List<Note>> getAllNotesDate();
+    @Query("SELECT * FROM note_table WHERE title LIKE :search||'%%' ORDER BY due_at ASC, priority DESC")
+    LiveData<List<Note>> getAllNotesDate(String search);
 
-    @Query("SELECT * FROM note_table ORDER BY priority DESC, due_at ASC")
-    LiveData<List<Note>> getAllNotesPriority();
+    @Query("SELECT * FROM note_table WHERE title LIKE :search||'%%' ORDER BY priority DESC, due_at ASC")
+    LiveData<List<Note>> getAllNotesPriority(String search);
 
 }

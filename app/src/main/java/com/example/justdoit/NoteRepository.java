@@ -16,7 +16,7 @@ public class NoteRepository {
     public NoteRepository(Application application) {
         NoteDatabase database = NoteDatabase.getInstance(application);
         noteDao = database.noteDao();
-        allNotes = noteDao.getAllNotesDate();
+        allNotes = noteDao.getAllNotesDate("%");
     }
 
     public void insert(Note note) {
@@ -35,13 +35,13 @@ public class NoteRepository {
         new DeleteAllNotesAsyncTask(noteDao).execute();
     }
 
-    public LiveData<List<Note>> getAllNotesDate() {
-        allNotes = noteDao.getAllNotesDate();
+    public LiveData<List<Note>> getAllNotesDate(String search) {
+        allNotes = noteDao.getAllNotesDate(search);
         return allNotes;
     }
 
-    public LiveData<List<Note>> getAllNotesPriority() {
-        allNotes = noteDao.getAllNotesPriority();
+    public LiveData<List<Note>> getAllNotesPriority(String search) {
+        allNotes = noteDao.getAllNotesPriority(search);
         return allNotes;
     }
 
