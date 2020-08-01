@@ -60,7 +60,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         Note currentNote = getItem(position);
         holder.textViewTitle.setText(currentNote.getTitle());
         holder.textViewDescription.setText(currentNote.getDescription());
-        holder.textViewPriority.setText(String.valueOf(currentNote.getPriority()));
+//        holder.textViewPriority.setText(String.valueOf(currentNote.getPriority()));
         holder.textViewDueAt.setText(df.format(currentNote.getDueAt()));
         holder.checkBoxCompleted.setChecked(currentNote.isCompleted());
         holder.viewPriority.setBackgroundResource(colors[currentNote.getPriority() - 1]);
@@ -69,12 +69,12 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewDescription.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
             holder.textViewDescription.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+//            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         }
     }
 
@@ -85,7 +85,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     class NoteHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
         private TextView textViewDescription;
-        private TextView textViewPriority;
+//        private TextView textViewPriority;
         private TextView textViewDueAt;
         private CheckBox checkBoxCompleted;
         private View viewPriority;
@@ -94,7 +94,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
             textViewDescription = itemView.findViewById(R.id.text_view_description);
-            textViewPriority = itemView.findViewById(R.id.text_view_priority);
+//            textViewPriority = itemView.findViewById(R.id.text_view_priority);
             textViewDueAt = itemView.findViewById(R.id.text_view_duedate);
             checkBoxCompleted = itemView.findViewById(R.id.checkbox_completed);
             viewPriority = itemView.findViewById(R.id.view_priority);
