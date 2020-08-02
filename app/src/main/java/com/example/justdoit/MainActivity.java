@@ -43,6 +43,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     final NoteAdapter adapter = new NoteAdapter();
     private RadioButton radioDate;
     private Spinner spinner;
+    private String[] categoriesList = {
+            "All",
+            "Education",
+            "Work",
+            "Shopping",
+            "Health",
+            "Chores",
+            "Entertainment"
+    };
 
     private static DateFormat df = new SimpleDateFormat("EEE d MMM yy HH:mm", Locale.ENGLISH);
 
@@ -64,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         radioDate.setChecked(true);
 
         spinner = findViewById(R.id.spinner_category);
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoriesList);
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(this);

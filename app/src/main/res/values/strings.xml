@@ -1,12 +1,3 @@
 <resources>
     <string name="app_name">JustDoIt</string>
-    <string-array name="categories_array">
-        <item>All</item>
-        <item>Education</item>
-        <item>Work</item>
-        <item>Chores</item>
-        <item>Health</item>
-        <item>Shopping</item>
-        <item>Entertainment</item>
-    </string-array>
 </resources>

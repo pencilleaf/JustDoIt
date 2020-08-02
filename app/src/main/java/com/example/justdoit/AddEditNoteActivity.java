@@ -11,22 +11,27 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class AddEditNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String EXTRA_ID =
             "com.example.justdoit.EXTRA_TID";
     public static final String EXTRA_TITLE =
@@ -41,11 +46,20 @@ public class AddEditNoteActivity extends AppCompatActivity {
             "com.example.justdoit.EXTRA_COMPLETED";
 
     private EditText editTextTitle;
-    private EditText editTextCategory;
+    private Spinner spinnerCategorySelect;
     private NumberPicker numberPickerPriority;
     private TextView textViewDueDate;
     private ImageButton datePickerButton;
     private boolean completed;
+    private String category;
+    private String[] categoriesList = {
+            "Education",
+            "Work",
+            "Shopping",
+            "Health",
+            "Chores",
+            "Entertainment"
+    };
 
     private static DateFormat df = new SimpleDateFormat("EEE d MMM yy", Locale.ENGLISH);
     private static DateFormat tf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
@@ -59,10 +73,16 @@ public class AddEditNoteActivity extends AppCompatActivity {
         tf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
 
         editTextTitle = findViewById(R.id.edit_text_title);
-        editTextCategory = findViewById(R.id.edit_text_category);
+        spinnerCategorySelect = findViewById(R.id.spinner_category_select);
         numberPickerPriority = findViewById(R.id.number_picker_priority);
         textViewDueDate = findViewById(R.id.text_view_duedate);
         datePickerButton = findViewById(R.id.date_picker_button);
+
+        ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoriesList);
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinnerCategorySelect.setAdapter(arrayAdapter);
+        spinnerCategorySelect.setOnItemSelectedListener(this);
+        spinnerCategorySelect.setSelection(0);
 
         numberPickerPriority.setMinValue(1);
         numberPickerPriority.setMaxValue(5);
@@ -73,7 +93,12 @@ public class AddEditNoteActivity extends AppCompatActivity {
         if (intent.hasExtra(EXTRA_ID)) {
             setTitle("Edit Note");
             editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-            editTextCategory.setText(intent.getStringExtra(EXTRA_CATEGORY));
+
+            category = intent.getStringExtra(EXTRA_CATEGORY);
+            List<String> categories = Arrays.asList(categoriesList);
+            int ind = categories.indexOf(category);
+            spinnerCategorySelect.setSelection(ind);
+
             numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
@@ -138,7 +163,6 @@ public class AddEditNoteActivity extends AppCompatActivity {
 
     private void saveNote() {
         String title = editTextTitle.getText().toString();
-        String category = editTextCategory.getText().toString();
         int priority = numberPickerPriority.getValue();
         String date = textViewDueDate.getText().toString();
 
@@ -179,6 +203,16 @@ public class AddEditNoteActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        category = adapterView.getItemAtPosition(i).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
 
     }
 }

@@ -15,11 +15,27 @@
         android:hint="Title"
         android:inputType="text" />
 
-    <EditText
-        android:id="@+id/edit_text_category"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Description" />
+        android:padding="8dp">
+
+            <TextView
+                android:id="@+id/text_view_spinner_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true" />
+
+            <Spinner
+            android:id="@+id/spinner_category_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/text_view_spinner_label"
+            android:layout_toRightOf="@+id/text_view_spinner_label" />
+
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
