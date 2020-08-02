@@ -16,7 +16,7 @@ public class Note {
 
     private String title;
 
-    private String description;
+    private String category;
 
     private int priority;
 
@@ -26,9 +26,9 @@ public class Note {
     @TypeConverters({TimestampConverter.class})
     private Date dueAt;
 
-    public Note(String title, String description, int priority, boolean completed, Date dueAt) {
+    public Note(String title, String category, int priority, boolean completed, Date dueAt) {
         this.title = title;
-        this.description = description;
+        this.category = category;
         this.priority = priority;
         this.completed = completed;
         this.dueAt = dueAt;
@@ -46,8 +46,8 @@ public class Note {
         return title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCategory() {
+        return category;
     }
 
     public int getPriority() {

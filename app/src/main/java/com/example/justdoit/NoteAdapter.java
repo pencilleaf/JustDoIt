@@ -37,7 +37,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         @Override
         public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
             return oldItem.getTitle().equals(newItem.getTitle())  &&
-                    oldItem.getDescription().equals(newItem.getDescription()) &&
+                    oldItem.getCategory().equals(newItem.getCategory()) &&
                     oldItem.getPriority() == newItem.getPriority() &&
                     oldItem.getDueAt().equals(newItem.getDueAt()) &&
                     oldItem.isCompleted() == newItem.isCompleted();
@@ -59,7 +59,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
         Note currentNote = getItem(position);
         holder.textViewTitle.setText(currentNote.getTitle());
-        holder.textViewDescription.setText(currentNote.getDescription());
+        holder.textViewCategory.setText(currentNote.getCategory());
 //        holder.textViewPriority.setText(String.valueOf(currentNote.getPriority()));
         holder.textViewDueAt.setText(df.format(currentNote.getDueAt()));
         holder.checkBoxCompleted.setChecked(currentNote.isCompleted());
@@ -67,12 +67,12 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
         if (currentNote.isCompleted()) {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.textViewDescription.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.textViewCategory.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 //            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-            holder.textViewDescription.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.textViewCategory.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 //            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         }
@@ -84,7 +84,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
 
     class NoteHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
-        private TextView textViewDescription;
+        private TextView textViewCategory;
 //        private TextView textViewPriority;
         private TextView textViewDueAt;
         private CheckBox checkBoxCompleted;
@@ -93,7 +93,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         public NoteHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
-            textViewDescription = itemView.findViewById(R.id.text_view_description);
+            textViewCategory = itemView.findViewById(R.id.text_view_category);
 //            textViewPriority = itemView.findViewById(R.id.text_view_priority);
             textViewDueAt = itemView.findViewById(R.id.text_view_duedate);
             checkBoxCompleted = itemView.findViewById(R.id.checkbox_completed);

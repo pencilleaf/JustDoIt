@@ -30,4 +30,10 @@ public interface NoteDao {
     @Query("SELECT * FROM note_table WHERE title LIKE :search||'%%' ORDER BY priority DESC, due_at ASC")
     LiveData<List<Note>> getAllNotesPriority(String search);
 
+    @Query("SELECT * FROM note_table WHERE category = :category ORDER BY due_at ASC, priority DESC")
+    LiveData<List<Note>> getFilteredNotesDate(String category);
+
+    @Query("SELECT * FROM note_table WHERE category = :category ORDER BY priority DESC, due_at ASC")
+    LiveData<List<Note>> getFilteredNotesPriority(String category);
+
 }

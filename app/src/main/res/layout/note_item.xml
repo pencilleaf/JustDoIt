@@ -51,7 +51,7 @@
                 android:ellipsize="end"/>
 
             <TextView
-                android:id="@+id/text_view_description"
+                android:id="@+id/text_view_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/text_view_title"
@@ -61,7 +61,7 @@
                 android:id="@+id/text_view_duedate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text_view_description"
+                android:layout_below="@+id/text_view_category"
                 android:text="Date"/>
 
 

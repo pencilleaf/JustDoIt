@@ -45,6 +45,16 @@ public class NoteRepository {
         return allNotes;
     }
 
+    public LiveData<List<Note>> getFilteredNotesDate(String category) {
+        allNotes = noteDao.getFilteredNotesDate(category);
+        return allNotes;
+    }
+
+    public LiveData<List<Note>> getFilteredNotesPriority(String category) {
+        allNotes = noteDao.getFilteredNotesPriority(category);
+        return allNotes;
+    }
+
     private static class InsertNoteAsyncTask extends AsyncTask<Note, Void, Void> {
         private NoteDao noteDao;
 

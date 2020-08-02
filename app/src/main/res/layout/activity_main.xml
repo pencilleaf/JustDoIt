@@ -15,6 +15,12 @@
             android:layout_height="match_parent"
             android:layout_weight="20"
             android:padding="16dp">
+            <Spinner
+                android:id="@+id/spinner_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -22,7 +28,8 @@
                 android:layout_alignParentLeft="true"
                 android:text="Sort by:"
                 android:textAlignment="textEnd"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:gravity="end" />
             <RadioGroup
                 android:id="@+id/radio_group"
                 android:layout_width="wrap_content"

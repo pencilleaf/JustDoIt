@@ -31,8 +31,8 @@ public class AddEditNoteActivity extends AppCompatActivity {
             "com.example.justdoit.EXTRA_TID";
     public static final String EXTRA_TITLE =
             "com.example.justdoit.EXTRA_TITLE";
-    public static final String EXTRA_DESCRIPTION =
-            "com.example.justdoit.EXTRA_DESCRIPTION";
+    public static final String EXTRA_CATEGORY =
+            "com.example.justdoit.EXTRA_CATEGORY";
     public static final String EXTRA_PRIORITY =
             "com.example.justdoit.EXTRA_PRIORITY";
     public static final String EXTRA_DUEAT =
@@ -41,7 +41,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
             "com.example.justdoit.EXTRA_COMPLETED";
 
     private EditText editTextTitle;
-    private EditText editTextDescription;
+    private EditText editTextCategory;
     private NumberPicker numberPickerPriority;
     private TextView textViewDueDate;
     private ImageButton datePickerButton;
@@ -59,7 +59,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
         tf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
 
         editTextTitle = findViewById(R.id.edit_text_title);
-        editTextDescription = findViewById(R.id.edit_text_description);
+        editTextCategory = findViewById(R.id.edit_text_category);
         numberPickerPriority = findViewById(R.id.number_picker_priority);
         textViewDueDate = findViewById(R.id.text_view_duedate);
         datePickerButton = findViewById(R.id.date_picker_button);
@@ -73,7 +73,7 @@ public class AddEditNoteActivity extends AppCompatActivity {
         if (intent.hasExtra(EXTRA_ID)) {
             setTitle("Edit Note");
             editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            editTextCategory.setText(intent.getStringExtra(EXTRA_CATEGORY));
             numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
@@ -138,17 +138,17 @@ public class AddEditNoteActivity extends AppCompatActivity {
 
     private void saveNote() {
         String title = editTextTitle.getText().toString();
-        String description = editTextDescription.getText().toString();
+        String category = editTextCategory.getText().toString();
         int priority = numberPickerPriority.getValue();
         String date = textViewDueDate.getText().toString();
 
-        if (title.trim().isEmpty() || description.trim().isEmpty() || date.trim().isEmpty()) {
-            Toast.makeText(this, "Please insert a title and description", Toast.LENGTH_SHORT).show();
+        if (title.trim().isEmpty() || category.trim().isEmpty() || date.trim().isEmpty()) {
+            Toast.makeText(this, "Please insert a title and date", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent data = new Intent();
         data.putExtra(EXTRA_TITLE, title);
-        data.putExtra(EXTRA_DESCRIPTION, description);
+        data.putExtra(EXTRA_CATEGORY, category);
         data.putExtra(EXTRA_PRIORITY, priority);
         data.putExtra(EXTRA_DUEAT, date);
         data.putExtra(EXTRA_COMPLETED, completed);

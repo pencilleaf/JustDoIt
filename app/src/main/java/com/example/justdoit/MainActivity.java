@@ -8,7 +8,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,13 +35,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final int ADD_NOTE_REQUEST = 1;
     public static final int EDIT_NOTE_REQUEST = 2;
     private NoteViewModel noteViewModel;
     private AppBarConfiguration mAppBarConfiguration;
     final NoteAdapter adapter = new NoteAdapter();
     private RadioButton radioDate;
+    private Spinner spinner;
 
     private static DateFormat df = new SimpleDateFormat("EEE d MMM yy HH:mm", Locale.ENGLISH);
 
@@ -59,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
         radioDate = findViewById(R.id.radio_date);
         radioDate.setChecked(true);
 
+        spinner = findViewById(R.id.spinner_category);
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(this, R.array.categories_array, android.R.layout.simple_spinner_dropdown_item);
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(this);
+        spinner.setSelection(0);
+
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
@@ -68,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         noteViewModel.sortCol.setValue("DATE");
-        noteViewModel.searchString.setValue("%");
         noteViewModel.allNotes.observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
@@ -96,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnCheckClickListener(new NoteAdapter.OnItemCheckClickListener() {
             @Override
             public void onCheckClick(Note note) {
-                Note newNote = new Note(note.getTitle(), note.getDescription(), note.getPriority(), !note.isCompleted(), note.getDueAt());
+                Note newNote = new Note(note.getTitle(), note.getCategory(), note.getPriority(), !note.isCompleted(), note.getDueAt());
                 newNote.setId(note.getId());
                 noteViewModel.update(newNote);
                 Toast.makeText(MainActivity.this, "Toggle complete", Toast.LENGTH_SHORT).show();
@@ -108,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AddEditNoteActivity.class);
                 intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.getId());
                 intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.getTitle());
-                intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
+                intent.putExtra(AddEditNoteActivity.EXTRA_CATEGORY, note.getCategory());
                 intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.getPriority());
                 intent.putExtra(AddEditNoteActivity.EXTRA_DUEAT, df.format(note.getDueAt()));
                 intent.putExtra(AddEditNoteActivity.EXTRA_COMPLETED, note.isCompleted());
@@ -123,13 +133,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
             String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
+            String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
             int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
             String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
             Date dateInsert = null;
             try {
                 dateInsert = df.parse(date);
-                Note note = new Note(title, description, priority, false, dateInsert);
+                Note note = new Note(title, category, priority, false, dateInsert);
                 noteViewModel.insert(note);
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
@@ -144,14 +154,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
-            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
+            String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
             int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
             String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
             boolean completed = data.getBooleanExtra(AddEditNoteActivity.EXTRA_COMPLETED, false);
             Date dateInsert = null;
             try {
                 dateInsert = df.parse(date);
-                Note note = new Note(title, description, priority, completed, dateInsert);
+                Note note = new Note(title, category, priority, completed, dateInsert);
                 note.setId(id);
                 noteViewModel.update(note);
                 Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
@@ -215,5 +225,16 @@ public class MainActivity extends AppCompatActivity {
                     noteViewModel.sortCol.setValue("PRIORITY");
                     break;
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String string = adapterView.getItemAtPosition(i).toString();
+        noteViewModel.category.setValue(string);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
