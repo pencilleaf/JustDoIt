@@ -110,6 +110,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
 
         switchReminder.setOnCheckedChangeListener(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
         final Intent intent = getIntent();
@@ -226,22 +227,22 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             case R.id.save_note:
                 saveNote();
                 return true;
+            case android.R.id.home:
+                finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         switch(adapterView.getId()) {
             case R.id.spinner_category_select:
-                Log.d("ITEMSPINNER", "spinner category!");
                 category = adapterView.getItemAtPosition(i).toString();
                 textViewCategory.setText(category);
                 break;
             case R.id.spinner_priority_select:
-                Log.d("ITEMSPINNER", "spinner priority!");
                 textViewPriority.setText(adapterView.getItemAtPosition(i).toString());
                 break;
             default:

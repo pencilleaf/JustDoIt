@@ -148,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
         String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
         int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
@@ -159,10 +164,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         try {
             Date dateInsert = df.parse(date);
             Note note = new Note(title, category, priority, completed, dateInsert, description, reminder);
-            if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
+            if (requestCode == ADD_NOTE_REQUEST) {
                 noteViewModel.insert(note);
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
-            } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+            } else if (requestCode == EDIT_NOTE_REQUEST) {
                 int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
                 if (id == -1) {
                     Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
