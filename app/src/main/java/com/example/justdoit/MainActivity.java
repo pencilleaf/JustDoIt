@@ -1,8 +1,10 @@
 package com.example.justdoit;
 
-import android.app.SearchManager;
-import android.content.Context;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        createNotificationChannel();
+
         FloatingActionButton buttonAddNote = findViewById(R.id.button_add_note);
         buttonAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
-//        final NoteAdapter adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
 
         noteViewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
@@ -115,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setOnCheckClickListener(new NoteAdapter.OnItemCheckClickListener() {
             @Override
             public void onCheckClick(Note note) {
-                Note newNote = new Note(note.getTitle(), note.getCategory(), note.getPriority(), !note.isCompleted(), note.getDueAt());
+                Note newNote = new Note(note.getTitle(), note.getCategory(), note.getPriority(), !note.isCompleted(), note.getDueAt(), note.getDescription(), note.isReminder());
                 newNote.setId(note.getId());
                 noteViewModel.update(newNote);
                 Toast.makeText(MainActivity.this, "Toggle complete", Toast.LENGTH_SHORT).show();
@@ -131,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra(AddEditNoteActivity.EXTRA_PRIORITY, note.getPriority());
                 intent.putExtra(AddEditNoteActivity.EXTRA_DUEAT, df.format(note.getDueAt()));
                 intent.putExtra(AddEditNoteActivity.EXTRA_COMPLETED, note.isCompleted());
+                intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
+                intent.putExtra(AddEditNoteActivity.EXTRA_REMINDER, note.isReminder());
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
@@ -145,10 +150,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
             int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
             String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
+            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
+            boolean reminder = data.getBooleanExtra(AddEditNoteActivity.EXTRA_REMINDER, false);
+
             Date dateInsert = null;
             try {
                 dateInsert = df.parse(date);
-                Note note = new Note(title, category, priority, false, dateInsert);
+                Note note = new Note(title, category, priority, false, dateInsert, description, reminder);
                 noteViewModel.insert(note);
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
@@ -168,9 +176,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
             boolean completed = data.getBooleanExtra(AddEditNoteActivity.EXTRA_COMPLETED, false);
             Date dateInsert = null;
+            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
+            boolean reminder = data.getBooleanExtra(AddEditNoteActivity.EXTRA_REMINDER, false);
+
             try {
                 dateInsert = df.parse(date);
-                Note note = new Note(title, category, priority, completed, dateInsert);
+                Note note = new Note(title, category, priority, completed, dateInsert, description, reminder);
                 note.setId(id);
                 noteViewModel.update(note);
                 Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
@@ -201,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public boolean onQueryTextChange(String newText) {
                 // filter items
                 noteViewModel.searchString.setValue(newText);
-//                noteViewModel.getSearchResults();
                 return false;
             }
         });
@@ -245,5 +255,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "JustDoItReminderChannel";
+            String description = "Channel for JustDoIt Reminder";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyJustDoIt", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

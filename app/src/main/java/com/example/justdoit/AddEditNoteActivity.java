@@ -14,11 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class AddEditNoteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddEditNoteActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
     public static final String EXTRA_ID =
             "com.example.justdoit.EXTRA_TID";
     public static final String EXTRA_TITLE =
@@ -45,14 +46,21 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             "com.example.justdoit.EXTRA_DUEAT";
     public static final String EXTRA_COMPLETED =
             "com.example.justdoit.EXTRA_COMPLETED";
+    public static final String EXTRA_DESCRIPTION =
+            "com.example.justdoit.EXTRA_DESCRIPTION";
+    public static final String EXTRA_REMINDER =
+            "com.example.justdoit.EXTRA_REMINDER";
 
     private EditText editTextTitle;
+    private EditText editTextDescription;
     private Spinner spinnerCategorySelect;
     private TextView textViewCategory;
     private Spinner spinnerPrioritySelect;
     private TextView textViewPriority;
     private TextView textViewDueDate;
     private ImageButton datePickerButton;
+    private Switch switchReminder;
+    private TextView textViewReminder;
     private boolean completed;
     private String category;
 
@@ -78,13 +86,15 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         tf.setTimeZone(TimeZone.getTimeZone("Asia/Singapore"));
 
         editTextTitle = findViewById(R.id.edit_text_title);
+        editTextDescription = findViewById(R.id.edit_text_description);
         spinnerCategorySelect = findViewById(R.id.spinner_category_select);
         textViewCategory = findViewById(R.id.text_view_category);
         spinnerPrioritySelect = findViewById(R.id.spinner_priority_select);
         textViewPriority = findViewById(R.id.text_view_priority);
-//        numberPickerPriority = findViewById(R.id.number_picker_priority);
         textViewDueDate = findViewById(R.id.text_view_duedate);
         datePickerButton = findViewById(R.id.date_picker_button);
+        switchReminder = findViewById(R.id.switch_reminder);
+        textViewReminder = findViewById(R.id.text_view_reminder);
 
         ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoriesList);
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -98,8 +108,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         spinnerPrioritySelect.setOnItemSelectedListener(this);
         spinnerPrioritySelect.setSelection(0);
 
-//        numberPickerPriority.setMinValue(1);
-//        numberPickerPriority.setMaxValue(5);
+        switchReminder.setOnCheckedChangeListener(this);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
@@ -107,14 +116,14 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         if (intent.hasExtra(EXTRA_ID)) {
             setTitle("Edit Note");
             editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
-
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
             category = intent.getStringExtra(EXTRA_CATEGORY);
             List<String> categories = Arrays.asList(categoriesList);
             int ind = categories.indexOf(category);
             spinnerCategorySelect.setSelection(ind);
+            switchReminder.setChecked(intent.getBooleanExtra(EXTRA_REMINDER,false));
 
             spinnerPrioritySelect.setSelection(intent.getIntExtra(EXTRA_PRIORITY, 0) - 1);
-//            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
         } else {
@@ -172,18 +181,17 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
                 textViewDueDate.setText(dateTime);
             }
         }, hour + 1, minute, false);
-//        timePickerDialog.setMin(hour + 1, minute);
         timePickerDialog.show();
     }
 
     private void saveNote() {
         String title = editTextTitle.getText().toString();
-//        int priority = numberPickerPriority.getValue();
+        String description = editTextDescription.getText().toString();
         int priority = Integer.parseInt(textViewPriority.getText().toString());
         String date = textViewDueDate.getText().toString();
 
         if (title.trim().isEmpty() || category.trim().isEmpty() || date.trim().isEmpty()) {
-            Toast.makeText(this, "Please insert a title and date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please insert a title and due date", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent data = new Intent();
@@ -192,6 +200,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         data.putExtra(EXTRA_PRIORITY, priority);
         data.putExtra(EXTRA_DUEAT, date);
         data.putExtra(EXTRA_COMPLETED, completed);
+        data.putExtra(EXTRA_DESCRIPTION, description);
+        data.putExtra(EXTRA_REMINDER, switchReminder.isChecked());
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -242,5 +252,14 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (b) {
+            textViewReminder.setText("On");
+        } else {
+            textViewReminder.setText("Off");
+        }
     }
 }

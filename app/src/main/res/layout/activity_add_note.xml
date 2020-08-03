@@ -19,23 +19,28 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Title" />
+            android:text="Title"
+            android:textColor="#ffffff"/>
 
         <EditText
+            android:textColor="#ffffff"
             android:id="@+id/edit_text_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Title"
+            android:textSize="28dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:inputType="text"
             android:layout_marginBottom="20dp"/>
 
         <EditText
-            android:id="@+id/edit_text_notes"
+            android:textColor="#ffffff"
+            android:id="@+id/edit_text_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Notes"
-            android:inputType="text"
+            android:hint="Description"
+            android:maxLines="3"
+            android:inputType="textMultiLine"
             android:layout_marginBottom="20dp"/>
     </LinearLayout>
 
@@ -43,12 +48,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="30dp">
 
             <ImageView
                 android:id="@+id/category_icon"
@@ -58,7 +63,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="30dp"/>
 
             <TextView
                 android:id="@+id/text_view_category_title"
@@ -91,7 +96,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="30dp">
 
             <ImageButton
                 android:background="@null"
@@ -102,7 +107,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="30dp"/>
 
             <TextView
                 android:id="@+id/text_view_duedate_title"
@@ -117,7 +122,7 @@
             <TextView
                 android:id="@+id/text_view_duedate"
                 android:layout_width="fill_parent"
-                android:text="Mon, 20 Aug 2020"
+                android:text="None"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/date_picker_button"
                 android:layout_toRightOf="@+id/date_picker_button"
@@ -128,7 +133,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="30dp">
 
             <ImageView
                 android:id="@+id/priority_icon"
@@ -138,7 +143,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="30dp"/>
 
             <TextView
                 android:id="@+id/text_view_priority_title"
@@ -171,6 +176,49 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp">
+
+            <ImageView
+                android:id="@+id/reminder_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_notifications_24"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"/>
+
+            <TextView
+                android:id="@+id/text_view_reminder_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set reminder"
+                android:layout_toEndOf="@id/reminder_icon"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:layout_toRightOf="@id/reminder_icon" />
+
+            <TextView
+                android:id="@+id/text_view_reminder"
+                android:text="Off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/reminder_icon"
+                android:layout_toRightOf="@+id/reminder_icon"
+                android:layout_below="@+id/text_view_reminder_title"/>
+
+            <Switch
+                android:id="@+id/switch_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
@@ -181,7 +229,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginRight="30dp"/>
 
             <TextView
                 android:id="@+id/text_view_attachment_title"

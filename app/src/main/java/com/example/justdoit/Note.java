@@ -22,16 +22,22 @@ public class Note {
 
     private boolean completed;
 
+    private String description;
+
+    private boolean reminder;
+
     @ColumnInfo(name = "due_at")
     @TypeConverters({TimestampConverter.class})
     private Date dueAt;
 
-    public Note(String title, String category, int priority, boolean completed, Date dueAt) {
+    public Note(String title, String category, int priority, boolean completed, Date dueAt, String description, boolean reminder) {
         this.title = title;
         this.category = category;
         this.priority = priority;
         this.completed = completed;
         this.dueAt = dueAt;
+        this.description = description;
+        this.reminder = reminder;
     }
 
     public void setId(int id) {
@@ -61,4 +67,8 @@ public class Note {
     public Date getDueAt() {
         return dueAt;
     }
+
+    public String getDescription() { return description; }
+
+    public boolean isReminder() { return reminder; }
 }

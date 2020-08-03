@@ -2,11 +2,9 @@ package com.example.justdoit;
 
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -28,9 +26,7 @@ public class NoteViewModel extends AndroidViewModel {
         super(application);
         repository = new NoteRepository(application);
         allNotes = Transformations.switchMap(params, val -> {
-            Log.d("LIVEDATA", val.first + val.second + val.third);
             if  (!val.second.isEmpty() || val.third.equals("All")){
-                Log.d("LIVEDATA", "Get all notes");
                 switch (val.first) {
                     case "DATE":
                         return repository.getAllNotesDate("%" + val.second + "%");
@@ -39,7 +35,6 @@ public class NoteViewModel extends AndroidViewModel {
                 }
             }
             if (!val.third.equals("All")){
-                Log.d("LIVEDATA", "Get filtered notes");
                 switch (val.first) {
                     case "DATE":
                         return repository.getFilteredNotesDate(val.third);
