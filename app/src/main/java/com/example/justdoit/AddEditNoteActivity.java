@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -47,11 +48,15 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
 
     private EditText editTextTitle;
     private Spinner spinnerCategorySelect;
-    private NumberPicker numberPickerPriority;
+    private TextView textViewCategory;
+    private Spinner spinnerPrioritySelect;
+    private TextView textViewPriority;
     private TextView textViewDueDate;
     private ImageButton datePickerButton;
     private boolean completed;
     private String category;
+
+    private String[] priorityList = {"1","2","3","4","5"};
     private String[] categoriesList = {
             "Education",
             "Work",
@@ -74,7 +79,10 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
 
         editTextTitle = findViewById(R.id.edit_text_title);
         spinnerCategorySelect = findViewById(R.id.spinner_category_select);
-        numberPickerPriority = findViewById(R.id.number_picker_priority);
+        textViewCategory = findViewById(R.id.text_view_category);
+        spinnerPrioritySelect = findViewById(R.id.spinner_priority_select);
+        textViewPriority = findViewById(R.id.text_view_priority);
+//        numberPickerPriority = findViewById(R.id.number_picker_priority);
         textViewDueDate = findViewById(R.id.text_view_duedate);
         datePickerButton = findViewById(R.id.date_picker_button);
 
@@ -84,8 +92,14 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         spinnerCategorySelect.setOnItemSelectedListener(this);
         spinnerCategorySelect.setSelection(0);
 
-        numberPickerPriority.setMinValue(1);
-        numberPickerPriority.setMaxValue(5);
+        ArrayAdapter<CharSequence> arrayAdapter_ = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, priorityList);
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinnerPrioritySelect.setAdapter(arrayAdapter_);
+        spinnerPrioritySelect.setOnItemSelectedListener(this);
+        spinnerPrioritySelect.setSelection(0);
+
+//        numberPickerPriority.setMinValue(1);
+//        numberPickerPriority.setMaxValue(5);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
@@ -99,7 +113,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             int ind = categories.indexOf(category);
             spinnerCategorySelect.setSelection(ind);
 
-            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+            spinnerPrioritySelect.setSelection(intent.getIntExtra(EXTRA_PRIORITY, 0) - 1);
+//            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
         } else {
@@ -163,7 +178,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
 
     private void saveNote() {
         String title = editTextTitle.getText().toString();
-        int priority = numberPickerPriority.getValue();
+//        int priority = numberPickerPriority.getValue();
+        int priority = Integer.parseInt(textViewPriority.getText().toString());
         String date = textViewDueDate.getText().toString();
 
         if (title.trim().isEmpty() || category.trim().isEmpty() || date.trim().isEmpty()) {
@@ -208,7 +224,19 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        category = adapterView.getItemAtPosition(i).toString();
+        switch(adapterView.getId()) {
+            case R.id.spinner_category_select:
+                Log.d("ITEMSPINNER", "spinner category!");
+                category = adapterView.getItemAtPosition(i).toString();
+                textViewCategory.setText(category);
+                break;
+            case R.id.spinner_priority_select:
+                Log.d("ITEMSPINNER", "spinner priority!");
+                textViewPriority.setText(adapterView.getItemAtPosition(i).toString());
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

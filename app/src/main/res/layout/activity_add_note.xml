@@ -1,79 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".AddEditNoteActivity">
 
-    <EditText
-        android:id="@+id/edit_text_title"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title"
-        android:inputType="text" />
+        android:background="@color/colorPrimary"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingRight="16dp"
+        android:paddingLeft="36dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp">
-
-            <TextView
-                android:id="@+id/text_view_spinner_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Category"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true" />
-
-            <Spinner
-            android:id="@+id/spinner_category_select"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/text_view_spinner_label"
-            android:layout_toRightOf="@+id/text_view_spinner_label" />
+            android:text="Title" />
 
-    </RelativeLayout>
+        <EditText
+            android:id="@+id/edit_text_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:inputType="text"
+            android:layout_marginBottom="20dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Priority"
-        android:layout_marginTop="8dp"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
-
-    <NumberPicker
-        android:id="@+id/number_picker_priority"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/edit_text_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Notes"
+            android:inputType="text"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <ImageButton
-            android:id="@+id/date_picker_button"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_date"/>
+            android:layout_marginBottom="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/category_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_category"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"/>
+
+            <TextView
+                android:id="@+id/text_view_category_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:layout_toEndOf="@id/category_icon"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:layout_toRightOf="@id/category_icon" />
+
+            <TextView
+                android:id="@+id/text_view_category"
+                android:text="None"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/category_icon"
+                android:layout_toRightOf="@+id/category_icon"
+                android:layout_below="@+id/text_view_category_title"/>
+
+            <Spinner
+                android:id="@+id/spinner_category_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Due At"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@android:style/TextAppearance.Medium" />
+            android:layout_marginBottom="20dp">
 
-        <TextView
-            android:id="@+id/text_view_duedate"
-            android:layout_width="fill_parent"
-            android:gravity="right"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"/>
+            <ImageButton
+                android:background="@null"
+                android:id="@+id/date_picker_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_date"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"/>
+
+            <TextView
+                android:id="@+id/text_view_duedate_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Due Date"
+                android:layout_toEndOf="@id/date_picker_button"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:layout_toRightOf="@id/date_picker_button" />
+
+            <TextView
+                android:id="@+id/text_view_duedate"
+                android:layout_width="fill_parent"
+                android:text="Mon, 20 Aug 2020"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/date_picker_button"
+                android:layout_toRightOf="@+id/date_picker_button"
+                android:layout_below="@+id/text_view_duedate_title"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <ImageView
+                android:id="@+id/priority_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_priority"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"/>
+
+            <TextView
+                android:id="@+id/text_view_priority_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Priority"
+                android:layout_toEndOf="@id/priority_icon"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:layout_toRightOf="@id/priority_icon" />
+
+            <TextView
+                android:id="@+id/text_view_priority"
+                android:text="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/priority_icon"
+                android:layout_toRightOf="@+id/priority_icon"
+                android:layout_below="@+id/text_view_priority_title"/>
+
+            <Spinner
+                android:id="@+id/spinner_priority_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/attachment_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_attachment"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dp"/>
+
+            <TextView
+                android:id="@+id/text_view_attachment_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attachments"
+                android:layout_toEndOf="@id/attachment_icon"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@android:style/TextAppearance.Medium"
+                android:layout_toRightOf="@id/attachment_icon" />
+
+            <TextView
+                android:id="@+id/text_view_attachment"
+                android:text="None"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/attachment_icon"
+                android:layout_toRightOf="@+id/attachment_icon"
+                android:layout_below="@+id/text_view_attachment_title"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
-
-
 </LinearLayout>
