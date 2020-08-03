@@ -1,8 +1,10 @@
 package com.example.justdoit;
 
 
+import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +42,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final int ADD_NOTE_REQUEST = 1;
     public static final int EDIT_NOTE_REQUEST = 2;
+    public static final int REMINDER_BROADCAST_REQUEST = 3;
     private NoteViewModel noteViewModel;
     private AppBarConfiguration mAppBarConfiguration;
     final NoteAdapter adapter = new NoteAdapter();
@@ -145,51 +148,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
-            String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
-            String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
-            int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
-            String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
-            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
-            boolean reminder = data.getBooleanExtra(AddEditNoteActivity.EXTRA_REMINDER, false);
+        String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
+        String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
+        int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
+        String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
+        boolean completed = data.getBooleanExtra(AddEditNoteActivity.EXTRA_COMPLETED, false);
+        String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
+        boolean reminder = data.getBooleanExtra(AddEditNoteActivity.EXTRA_REMINDER, false);
 
-            Date dateInsert = null;
-            try {
-                dateInsert = df.parse(date);
-                Note note = new Note(title, category, priority, false, dateInsert, description, reminder);
+        try {
+            Date dateInsert = df.parse(date);
+            Note note = new Note(title, category, priority, completed, dateInsert, description, reminder);
+            if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
                 noteViewModel.insert(note);
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
-            int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
-
-            if (id == -1) {
-                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            String title = data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE);
-            String category = data.getStringExtra(AddEditNoteActivity.EXTRA_CATEGORY);
-            int priority = data.getIntExtra(AddEditNoteActivity.EXTRA_PRIORITY, 1);
-            String date = data.getStringExtra(AddEditNoteActivity.EXTRA_DUEAT);
-            boolean completed = data.getBooleanExtra(AddEditNoteActivity.EXTRA_COMPLETED, false);
-            Date dateInsert = null;
-            String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
-            boolean reminder = data.getBooleanExtra(AddEditNoteActivity.EXTRA_REMINDER, false);
-
-            try {
-                dateInsert = df.parse(date);
-                Note note = new Note(title, category, priority, completed, dateInsert, description, reminder);
+            } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
+                int id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1);
+                if (id == -1) {
+                    Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 note.setId(id);
                 noteViewModel.update(note);
                 Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (reminder) {
+            Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+            intent.putExtra("title", title);
+            intent.putExtra("category", category);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, REMINDER_BROADCAST_REQUEST, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            try {
+                Date dateInsert = df.parse(date);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, dateInsert.getTime() ,pendingIntent);
+                Toast.makeText(this, "Reminder set", Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-        } else {
-            Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -210,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // filter items
                 noteViewModel.searchString.setValue(newText);
                 return false;
             }
@@ -254,7 +254,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 
     private void createNotificationChannel() {
