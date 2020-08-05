@@ -9,7 +9,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -127,6 +126,11 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
 
+        Date currentDateTime = new Date();
+        Date defaultDateTime = new Date(currentDateTime.getTime() + 3600*1000);
+        textViewDueDate.setText(df.format(defaultDateTime) + " " + tf.format(defaultDateTime));
+        selectedImageUri = "";
+
         final Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_ID)) {
             setTitle("Edit Note");
@@ -228,7 +232,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         int priority = Integer.parseInt(textViewPriority.getText().toString());
         String date = textViewDueDate.getText().toString();
 
-        if (title.trim().isEmpty() || category.trim().isEmpty() || date.trim().isEmpty()) {
+        if (title.trim().isEmpty() || date.equals("None")) {
             Toast.makeText(this, "Please insert a title and due date", Toast.LENGTH_SHORT).show();
             return;
         }
