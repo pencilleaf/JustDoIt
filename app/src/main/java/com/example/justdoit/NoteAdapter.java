@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,7 +41,10 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
                     oldItem.getCategory().equals(newItem.getCategory()) &&
                     oldItem.getPriority() == newItem.getPriority() &&
                     oldItem.getDueAt().equals(newItem.getDueAt()) &&
-                    oldItem.isCompleted() == newItem.isCompleted();
+                    oldItem.isCompleted() == newItem.isCompleted() &&
+                    oldItem.isReminder() == newItem.isReminder() &&
+                    oldItem.getDescription().equals(newItem.getDescription()) &&
+                    oldItem.getAttachment().equals(newItem.getAttachment());
         }
     };
 
@@ -60,21 +64,20 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         Note currentNote = getItem(position);
         holder.textViewTitle.setText(currentNote.getTitle());
         holder.textViewCategory.setText(currentNote.getCategory());
-//        holder.textViewPriority.setText(String.valueOf(currentNote.getPriority()));
         holder.textViewDueAt.setText(df.format(currentNote.getDueAt()));
         holder.checkBoxCompleted.setChecked(currentNote.isCompleted());
         holder.viewPriority.setBackgroundResource(colors[currentNote.getPriority() - 1]);
+        holder.attachmentInd.setVisibility(currentNote.getAttachment().equals("") ? View.INVISIBLE : View.VISIBLE);
+        holder.notificationInd.setVisibility(currentNote.isReminder() ? View.VISIBLE : View.INVISIBLE);
 
         if (currentNote.isCompleted()) {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewCategory.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.textViewTitle.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
             holder.textViewCategory.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
             holder.textViewDueAt.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
-//            holder.textViewPriority.setPaintFlags(holder.textViewTitle.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
         }
     }
 
@@ -85,19 +88,22 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     class NoteHolder extends RecyclerView.ViewHolder {
         private TextView textViewTitle;
         private TextView textViewCategory;
-//        private TextView textViewPriority;
         private TextView textViewDueAt;
         private CheckBox checkBoxCompleted;
         private View viewPriority;
+        private ImageView attachmentInd;
+        private ImageView notificationInd;
 
         public NoteHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.text_view_title);
             textViewCategory = itemView.findViewById(R.id.text_view_category);
-//            textViewPriority = itemView.findViewById(R.id.text_view_priority);
             textViewDueAt = itemView.findViewById(R.id.text_view_duedate);
             checkBoxCompleted = itemView.findViewById(R.id.checkbox_completed);
             viewPriority = itemView.findViewById(R.id.view_priority);
+            attachmentInd = itemView.findViewById(R.id.attachment_ind);
+            notificationInd = itemView.findViewById(R.id.notification_ind);
+
 
             checkBoxCompleted.setOnClickListener(new View.OnClickListener() {
                 @Override

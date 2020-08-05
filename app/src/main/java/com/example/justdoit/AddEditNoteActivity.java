@@ -141,9 +141,9 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             spinnerPrioritySelect.setSelection(intent.getIntExtra(EXTRA_PRIORITY, 0) - 1);
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
+            selectedImageUri = intent.getStringExtra(EXTRA_ATTACHMENT);
 
-            if (intent.getStringExtra(EXTRA_ATTACHMENT) != null) {
-                selectedImageUri = intent.getStringExtra(EXTRA_ATTACHMENT);
+            if (selectedImageUri != "") {
                 Glide.with(this).load(Uri.parse(selectedImageUri)).into(imageViewAttachment);
             }
 
@@ -170,7 +170,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         buttonRemoveAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                selectedImageUri = null;
+                selectedImageUri = "";
                 imageViewAttachment.setImageDrawable(null);
             }
         });

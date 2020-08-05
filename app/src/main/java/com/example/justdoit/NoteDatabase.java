@@ -52,11 +52,11 @@ public abstract class NoteDatabase extends RoomDatabase {
             Date today = new Date();
             Date yesterday = new Date(today.getTime() - 24*3600*1000);
             Date tomorrow = new Date(today.getTime() + 24*3600*1000);
-            noteDao.insert(new Note("Watch lectures", "Education", 1, false, yesterday, "Lectures 11, 12", false, null));
-            noteDao.insert(new Note("Work on report", "Education", 2, false, today, "", false, null));
-            noteDao.insert(new Note("Submit app", "Work", 5,false, today, "", false, null));
-            noteDao.insert(new Note("Buy apples", "Shopping", 4,false, tomorrow, "", false, null));
-            noteDao.insert(new Note("Example tasks", "Work", 3,false, tomorrow, "", false, null));
+            noteDao.insert(new Note("Watch lectures", "Education", 1, false, yesterday, "Lectures 11, 12", false, ""));
+            noteDao.insert(new Note("Work on report", "Education", 2, false, today, "", false, ""));
+            noteDao.insert(new Note("Submit app", "Work", 5,false, today, "", false, ""));
+            noteDao.insert(new Note("Buy apples", "Shopping", 4,false, tomorrow, "", false, ""));
+            noteDao.insert(new Note("Example tasks", "Work", 3,false, tomorrow, "", false, ""));
             return null;
         }
     }
