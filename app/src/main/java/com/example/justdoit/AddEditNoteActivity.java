@@ -1,11 +1,13 @@
 package com.example.justdoit;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,11 +20,14 @@ import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,6 +55,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             "com.example.justdoit.EXTRA_DESCRIPTION";
     public static final String EXTRA_REMINDER =
             "com.example.justdoit.EXTRA_REMINDER";
+    public static final String EXTRA_ATTACHMENT =
+            "com.example.justdoit.EXTRA_ATTACHMENT";
 
     private EditText editTextTitle;
     private EditText editTextDescription;
@@ -63,6 +70,9 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
     private TextView textViewReminder;
     private boolean completed;
     private String category;
+    private ImageButton buttonAddAttachment;
+    private ImageView imageViewAttachment;
+    private Uri selectedImageUri;
 
     private String[] priorityList = {"1","2","3","4","5"};
     private String[] categoriesList = {
@@ -95,6 +105,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         datePickerButton = findViewById(R.id.date_picker_button);
         switchReminder = findViewById(R.id.switch_reminder);
         textViewReminder = findViewById(R.id.text_view_reminder);
+        buttonAddAttachment =findViewById(R.id.button_add_attachment);
+        imageViewAttachment = findViewById(R.id.image_view_attachment);
 
         ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoriesList);
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -127,6 +139,12 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             spinnerPrioritySelect.setSelection(intent.getIntExtra(EXTRA_PRIORITY, 0) - 1);
             textViewDueDate.setText(intent.getStringExtra(EXTRA_DUEAT));
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
+
+            if (intent.getStringExtra(EXTRA_ATTACHMENT) != null) {
+                selectedImageUri = Uri.parse(intent.getStringExtra(EXTRA_ATTACHMENT));
+                Glide.with(this).load(selectedImageUri).into(imageViewAttachment);
+            }
+
         } else {
             setTitle("Add Note");
         }
@@ -135,6 +153,16 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             @Override
             public void onClick(View view) {
                 datePicker(intent.getStringExtra(EXTRA_DUEAT));
+            }
+        });
+
+        buttonAddAttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select an image"), 0);
             }
         });
 
@@ -203,6 +231,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         data.putExtra(EXTRA_COMPLETED, completed);
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_REMINDER, switchReminder.isChecked());
+        data.putExtra(EXTRA_ATTACHMENT, selectedImageUri.toString());
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -261,6 +290,17 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             textViewReminder.setText("On");
         } else {
             textViewReminder.setText("Off");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                selectedImageUri = data.getData();
+                Glide.with(this).load(selectedImageUri).into(imageViewAttachment);
+            }
         }
     }
 }

@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.setOnCheckClickListener(new NoteAdapter.OnItemCheckClickListener() {
             @Override
             public void onCheckClick(Note note) {
-                Note newNote = new Note(note.getTitle(), note.getCategory(), note.getPriority(), !note.isCompleted(), note.getDueAt(), note.getDescription(), note.isReminder());
+                Note newNote = new Note(note.getTitle(), note.getCategory(), note.getPriority(), !note.isCompleted(), note.getDueAt(), note.getDescription(), note.isReminder(), note.getAttachment());
                 newNote.setId(note.getId());
                 noteViewModel.update(newNote);
                 Toast.makeText(MainActivity.this, "Toggle complete", Toast.LENGTH_SHORT).show();
@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra(AddEditNoteActivity.EXTRA_COMPLETED, note.isCompleted());
                 intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.getDescription());
                 intent.putExtra(AddEditNoteActivity.EXTRA_REMINDER, note.isReminder());
+                intent.putExtra(AddEditNoteActivity.EXTRA_ATTACHMENT, note.getAttachment());
                 startActivityForResult(intent, EDIT_NOTE_REQUEST);
             }
         });
@@ -160,10 +161,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         boolean completed = data.getBooleanExtra(AddEditNoteActivity.EXTRA_COMPLETED, false);
         String description = data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION);
         boolean reminder = data.getBooleanExtra(AddEditNoteActivity.EXTRA_REMINDER, false);
+        String attachment = data.getStringExtra(AddEditNoteActivity.EXTRA_ATTACHMENT);
 
         try {
             Date dateInsert = df.parse(date);
-            Note note = new Note(title, category, priority, completed, dateInsert, description, reminder);
+            Note note = new Note(title, category, priority, completed, dateInsert, description, reminder, attachment);
             if (requestCode == ADD_NOTE_REQUEST) {
                 noteViewModel.insert(note);
                 Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();

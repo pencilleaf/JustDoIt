@@ -26,11 +26,13 @@ public class Note {
 
     private boolean reminder;
 
+    private String attachment;
+
     @ColumnInfo(name = "due_at")
     @TypeConverters({TimestampConverter.class})
     private Date dueAt;
 
-    public Note(String title, String category, int priority, boolean completed, Date dueAt, String description, boolean reminder) {
+    public Note(String title, String category, int priority, boolean completed, Date dueAt, String description, boolean reminder, String attachment) {
         this.title = title;
         this.category = category;
         this.priority = priority;
@@ -38,6 +40,7 @@ public class Note {
         this.dueAt = dueAt;
         this.description = description;
         this.reminder = reminder;
+        this.attachment = attachment;
     }
 
     public void setId(int id) {
@@ -68,7 +71,15 @@ public class Note {
         return dueAt;
     }
 
-    public String getDescription() { return description; }
+    public String getDescription() {
+        return description;
+    }
 
-    public boolean isReminder() { return reminder; }
+    public boolean isReminder() {
+        return reminder;
+    }
+
+    public String getAttachment() {
+        return attachment;
+    }
 }

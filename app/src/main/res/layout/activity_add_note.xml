@@ -254,7 +254,26 @@
                 android:layout_toRightOf="@+id/attachment_icon"
                 android:layout_below="@+id/text_view_attachment_title"/>
 
+            <ImageButton
+                android:src="@drawable/ic_add_circle"
+                android:background="@null"
+                android:id="@+id/button_add_attachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/image_view_attachment"
+            android:layout_marginLeft="54dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
 
     </LinearLayout>
     </ScrollView>
