@@ -255,9 +255,18 @@
                 android:layout_below="@+id/text_view_attachment_title"/>
 
             <ImageButton
-                android:src="@drawable/ic_add_circle"
+                android:src="@drawable/ic_add_black"
                 android:background="@null"
                 android:id="@+id/button_add_attachment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/button_remove_attachment"
+                android:layout_centerVertical="true"/>
+
+            <ImageButton
+                android:src="@drawable/ic_delete"
+                android:background="@null"
+                android:id="@+id/button_remove_attachment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -271,7 +280,9 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"/>
 
 
 

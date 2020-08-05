@@ -71,8 +71,9 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
     private boolean completed;
     private String category;
     private ImageButton buttonAddAttachment;
+    private ImageButton buttonRemoveAttachment;
     private ImageView imageViewAttachment;
-    private Uri selectedImageUri;
+    private String selectedImageUri;
 
     private String[] priorityList = {"1","2","3","4","5"};
     private String[] categoriesList = {
@@ -106,6 +107,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         switchReminder = findViewById(R.id.switch_reminder);
         textViewReminder = findViewById(R.id.text_view_reminder);
         buttonAddAttachment =findViewById(R.id.button_add_attachment);
+        buttonRemoveAttachment = findViewById(R.id.button_remove_attachment);
         imageViewAttachment = findViewById(R.id.image_view_attachment);
 
         ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoriesList);
@@ -141,8 +143,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
             completed = intent.getBooleanExtra(EXTRA_COMPLETED, false);
 
             if (intent.getStringExtra(EXTRA_ATTACHMENT) != null) {
-                selectedImageUri = Uri.parse(intent.getStringExtra(EXTRA_ATTACHMENT));
-                Glide.with(this).load(selectedImageUri).into(imageViewAttachment);
+                selectedImageUri = intent.getStringExtra(EXTRA_ATTACHMENT);
+                Glide.with(this).load(Uri.parse(selectedImageUri)).into(imageViewAttachment);
             }
 
         } else {
@@ -163,6 +165,13 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select an image"), 0);
+            }
+        });
+        buttonRemoveAttachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedImageUri = null;
+                imageViewAttachment.setImageDrawable(null);
             }
         });
 
@@ -231,7 +240,7 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         data.putExtra(EXTRA_COMPLETED, completed);
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_REMINDER, switchReminder.isChecked());
-        data.putExtra(EXTRA_ATTACHMENT, selectedImageUri.toString());
+        data.putExtra(EXTRA_ATTACHMENT, selectedImageUri);
 
         int id = getIntent().getIntExtra(EXTRA_ID, -1);
         if (id != -1) {
@@ -298,8 +307,8 @@ public class AddEditNoteActivity extends AppCompatActivity implements AdapterVie
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                selectedImageUri = data.getData();
-                Glide.with(this).load(selectedImageUri).into(imageViewAttachment);
+                selectedImageUri = data.getData().toString();
+                Glide.with(this).load(data.getData()).into(imageViewAttachment);
             }
         }
     }
