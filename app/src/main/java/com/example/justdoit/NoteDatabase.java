@@ -49,10 +49,11 @@ public abstract class NoteDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            Date today = new Date();
-            Date yesterday = new Date(today.getTime() - 24*3600*1000);
-            Date tomorrow = new Date(today.getTime() + 24*3600*1000);
-            noteDao.insert(new Note("Watch lectures", "Education", 1, false, yesterday, "Lectures 11, 12", false, ""));
+            long now = System.currentTimeMillis() - 1000;
+            Date today = new Date(now);
+            Date yesterday = new Date(now - 24*3600*1000);
+            Date tomorrow = new Date(now + 24*3600*1000);
+            noteDao.insert(new Note("Watch lectures", "Education", 1, true, yesterday, "Lectures 11, 12", false, ""));
             noteDao.insert(new Note("Work on report", "Education", 2, false, today, "", false, ""));
             noteDao.insert(new Note("Submit app", "Work", 5,false, today, "", false, ""));
             noteDao.insert(new Note("Buy apples", "Shopping", 4,false, tomorrow, "", false, ""));

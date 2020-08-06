@@ -78,6 +78,7 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
         if (dueAt.getTime() <= now) {
             holder.taskCard.setBackgroundResource(R.color.colorHighlight);
             holder.textViewDueAt.setTextColor(Color.RED);
+            holder.textViewDueAt.setAlpha(1f);
         } else {
             holder.taskCard.setBackgroundResource(0);
             holder.textViewDueAt.setTextColor(Color.BLACK);
