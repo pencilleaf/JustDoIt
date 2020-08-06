@@ -8,4 +8,5 @@
     <color name="priority_3">#ffba42</color>
     <color name="priority_2">#daff82</color>
     <color name="priority_1">#92f060</color>
+    <color name="colorHighlight">#4FFFAEAC</color>
 </resources>
